@@ -1,12 +1,11 @@
 /* Public INTELLENZA payment display configuration.
  * The UPI ID and payee are intentionally public so students can pay.
- * Replace qrImagePath only after confirming which repository image is the official
- * bank-generated QR. Do not point this at a poster or logo.
+ * Official bank/payment QR image confirmed by the project owner.
  */
 window.INTELLENZA_PAYMENT_CONFIG = Object.freeze({
   upiId: "guna15364-4@oksbi",
   payeeName: "Guna Sekar",
-  qrImagePath: null,
+  qrImagePath: "/IMG-20260926-WA0001.jpg",
   currency: "INR",
   instructions: [
     "Pay the exact amount shown for your selected pass.",
