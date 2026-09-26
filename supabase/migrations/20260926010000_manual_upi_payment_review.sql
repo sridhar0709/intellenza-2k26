@@ -61,7 +61,7 @@ begin
     raise exception 'Administrator access required' using errcode='42501';
   end if;
 
-  if p_decision not in ('verified','rejected','pending') then
+  if p_decision is null or p_decision not in ('verified','rejected','pending') then
     raise exception 'Invalid payment decision' using errcode='22023';
   end if;
 
