@@ -205,6 +205,18 @@ html,body{width:100%;max-width:100%;overflow-x:clip}
   .floating-register{right:12px;bottom:12px;padding:12px 17px;font-size:.86rem}
 }
 
+
+/* Choose-your-pass layout fix */
+#regForm .package-options{display:flex;flex-direction:column;gap:12px;width:100%;min-width:0;margin-top:8px}
+#regForm .package-option{display:grid;grid-template-columns:20px minmax(0,1fr) auto;align-items:center;column-gap:12px;width:100%;min-width:0;padding:17px 18px;margin:0;transform:none;overflow:visible}
+#regForm .package-option:hover{transform:none}
+#regForm .package-option input[type=radio]{display:block;width:18px;height:18px;min-width:18px;margin:0;justify-self:center;align-self:center}
+#regForm .package-copy{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0;width:100%;white-space:normal}
+#regForm .package-copy strong{display:flex;align-items:center;flex-wrap:wrap;gap:7px;max-width:100%;line-height:1.35;overflow-wrap:anywhere}
+#regForm .package-copy small{display:block;white-space:normal;overflow-wrap:anywhere;line-height:1.5}
+#regForm .package-copy em{display:inline-block;margin:0;white-space:nowrap}
+#regForm .package-price{display:block;justify-self:end;align-self:center;white-space:nowrap;font-size:clamp(1rem,2vw,1.25rem);line-height:1.2;padding-left:6px}
+@media(max-width:540px){#regForm .package-option{grid-template-columns:18px minmax(0,1fr) auto;column-gap:9px;padding:15px 12px}#regForm .package-copy strong{font-size:.91rem}#regForm .package-copy small{font-size:.75rem}#regForm .package-price{font-size:1rem}}
 </style>
 </head>
 <body>
