@@ -6,7 +6,7 @@ window.INTELLENZA_PAYMENT_CONFIG = Object.freeze({
   upiId: "guna15364-4@oksbi",
   payeeName: "Guna Sekar",
   // Set to the public Cloudflare Turnstile site key before enabling registration.
-  turnstileSiteKey: "",
+  turnstileSiteKey: "0x4AAAAAAFEFDBN_5BiGOwpe",
   qrImagePath: "/IMG-20260926-WA0001.jpg",
   currency: "INR",
   instructions: [
