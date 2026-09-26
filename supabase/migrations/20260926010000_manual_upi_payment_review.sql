@@ -61,7 +61,7 @@ begin
     raise exception 'Administrator access required' using errcode='42501';
   end if;
 
-  if p_decision not in ('verified','rejected','pending') then
+  if p_decision is null or p_decision not in ('verified','rejected','pending') then
     raise exception 'Invalid payment decision' using errcode='22023';
   end if;
 
@@ -69,6 +69,10 @@ begin
     where id=p_registration_id for update;
   if not found then
     raise exception 'Registration not found' using errcode='P0002';
+  end if;
+
+  if p_decision='rejected' and nullif(trim(coalesce(p_note,'')),'') is null then
+    raise exception 'A rejection reason is required' using errcode='22023';
   end if;
 
   if p_decision='verified' and (v_row.utr is null or length(trim(v_row.utr)) < 6) then
