@@ -9,7 +9,7 @@ const isAllowedOrigin = (origin: string | null): boolean => {
     if (parsed.hostname === "intellenza-2k26.vercel.app") return true;
     // Permit only this project's Vercel preview/deployment hostnames.
     // Vercel generates a new hash hostname for each deployment.
-    return /^intellenza-2k26-[a-z0-9-]+-sridhar0709\\.vercel\\.app$/.test(parsed.hostname);
+    return /^intellenza-2k26-[a-z0-9-]+-sridhar0709\.vercel\.app$/.test(parsed.hostname);
   } catch {
     return false;
   }
