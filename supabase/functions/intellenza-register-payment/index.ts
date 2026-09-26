@@ -18,12 +18,27 @@ Deno.serve(async (req: Request) => {
 
   const url = Deno.env.get("SUPABASE_URL");
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-  if (!url || !serviceKey) return json({ error: "Payment submission service is not configured." }, 503);
+  const turnstileSecret = Deno.env.get("TURNSTILE_SECRET_KEY");
+  if (!url || !serviceKey || !turnstileSecret) return json({ error: "Payment submission service is not configured." }, 503);
 
   let uploadedPath: string | null = null;
   const supabase = createClient(url, serviceKey, { auth: { persistSession: false, autoRefreshToken: false } });
   try {
     const form = await req.formData();
+    const turnstileToken = String(form.get("cf-turnstile-response") ?? "").trim();
+    if (!turnstileToken) return json({ error: "Complete the CAPTCHA verification before submitting." }, 400);
+    const captchaForm = new URLSearchParams({ secret: turnstileSecret, response: turnstileToken });
+    if (req.headers.get("cf-connecting-ip")) captchaForm.set("remoteip", req.headers.get("cf-connecting-ip")!);
+    const captchaResponse = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: captchaForm,
+    });
+    const captchaResult = await captchaResponse.json();
+    if (!captchaResponse.ok || captchaResult.success !== true) {
+      return json({ error: "CAPTCHA verification failed. Please try again." }, 400);
+    }
+
     const full_name = String(form.get("name") ?? "").trim();
     const email = String(form.get("email") ?? "").trim().toLowerCase();
     const phone = String(form.get("phone") ?? "").trim();
