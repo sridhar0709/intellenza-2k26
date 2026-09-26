@@ -1,12 +1,21 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const allowedOrigins = new Set([
-  "https://intellenza-2k26.vercel.app",
-  "https://intellenza-2k26-4njtagcbq-sridhar0709.vercel.app",
-]);
+const isAllowedOrigin = (origin: string | null): boolean => {
+  if (!origin) return false;
+  try {
+    const parsed = new URL(origin);
+    if (parsed.protocol !== "https:" || parsed.port) return false;
+    if (parsed.hostname === "intellenza-2k26.vercel.app") return true;
+    // Permit only this project's Vercel preview/deployment hostnames.
+    // Vercel generates a new hash hostname for each deployment.
+    return /^intellenza-2k26-[a-z0-9-]+-sridhar0709\\.vercel\\.app$/.test(parsed.hostname);
+  } catch {
+    return false;
+  }
+};
 const corsHeaders = (origin: string | null) => ({
-  ...(origin && allowedOrigins.has(origin) ? { "Access-Control-Allow-Origin": origin } : {}),
+  ...(isAllowedOrigin(origin) ? { "Access-Control-Allow-Origin": origin! } : {}),
   "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Vary": "Origin",
@@ -17,11 +26,11 @@ const json = (body: unknown, status = 200, origin: string | null = null) =>
 Deno.serve(async (req: Request) => {
   const origin = req.headers.get("origin");
   if (req.method === "OPTIONS") {
-    if (origin && !allowedOrigins.has(origin)) return new Response("Origin not allowed", { status: 403 });
+    if (origin && !isAllowedOrigin(origin)) return new Response("Origin not allowed", { status: 403 });
     return new Response("ok", { headers: corsHeaders(origin) });
   }
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405, origin);
-  if (origin && !allowedOrigins.has(origin)) return json({ error: "Origin not allowed" }, 403, origin);
+  if (origin && !isAllowedOrigin(origin)) return json({ error: "Origin not allowed" }, 403, origin);
 
   const url = Deno.env.get("SUPABASE_URL");
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
