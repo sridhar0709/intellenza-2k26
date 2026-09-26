@@ -71,6 +71,10 @@ begin
     raise exception 'Registration not found' using errcode='P0002';
   end if;
 
+  if p_decision='rejected' and nullif(trim(coalesce(p_note,'')),'') is null then
+    raise exception 'A rejection reason is required' using errcode='22023';
+  end if;
+
   if p_decision='verified' and (v_row.utr is null or length(trim(v_row.utr)) < 6) then
     raise exception 'A payment UTR is required before verification' using errcode='22023';
   end if;
